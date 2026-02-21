@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 
 const Login = () => {
-  const [emailId, setEmailId] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -18,14 +18,14 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       const res = await axios.post(
-        BASE_URL + "/login",
+        BASE_URL + "/auth/login",
         {
-          emailId,
+          email,
           password,
         },
         { withCredentials: true }
       );
-      dispatch(addUser(res.data));
+      dispatch(addUser(res.data.data));
       return navigate("/");
     } catch (err) {
       setError(err?.response?.data || "Something went wrong");
@@ -35,8 +35,8 @@ const Login = () => {
   const handleSignUp = async () => {
     try {
       const res = await axios.post(
-        BASE_URL + "/signup",
-        { firstName, lastName, emailId, password },
+        BASE_URL + "/auth/signup",
+        { firstName, lastName, email, password },
         { withCredentials: true }
       );
       dispatch(addUser(res.data.data));
@@ -86,9 +86,9 @@ const Login = () => {
               </div>
               <input
                 type="text"
-                value={emailId}
+                value={email}
                 className="input input-bordered w-full max-w-xs"
-                onChange={(e) => setEmailId(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </label>
             <label className="form-control w-full max-w-xs my-2">
