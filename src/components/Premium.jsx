@@ -13,7 +13,7 @@ const Premium = () => {
       withCredentials: true,
     });
 
-    if (res.data.isPremium) {
+    if (res.data.data.isPremium) {
       setIsUserPremium(true);
     }
   };
