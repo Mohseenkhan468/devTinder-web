@@ -17,32 +17,41 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
+      setError("");
+
       const res = await axios.post(
         BASE_URL + "/auth/login",
-        {
-          email,
-          password,
-        },
+        { email, password },
         { withCredentials: true }
       );
+
+      // ✅ Only dispatch on login
       dispatch(addUser(res.data.data));
-      return navigate("/");
+
+      navigate("/");
     } catch (err) {
-      setError(err?.response?.data || "Something went wrong");
+      setError(err?.response?.data?.message || "Something went wrong");
     }
   };
 
   const handleSignUp = async () => {
     try {
-      const res = await axios.post(
+      setError("");
+
+      await axios.post(
         BASE_URL + "/auth/signup",
         { firstName, lastName, email, password },
         { withCredentials: true }
       );
-      dispatch(addUser(res.data.data));
-      return navigate("/profile");
+
+      setIsLoginForm(true);
+
+      setFirstName("");
+      setLastName("");
+      setPassword("");
+
     } catch (err) {
-      setError(err?.response?.data || "Something went wrong");
+      setError(err?.response?.data?.message || "Something went wrong");
     }
   };
 
@@ -53,6 +62,7 @@ const Login = () => {
           <h2 className="card-title justify-center">
             {isLoginForm ? "Login" : "Sign Up"}
           </h2>
+
           <div>
             {!isLoginForm && (
               <>
@@ -67,6 +77,7 @@ const Login = () => {
                     onChange={(e) => setFirstName(e.target.value)}
                   />
                 </label>
+
                 <label className="form-control w-full max-w-xs my-2">
                   <div className="label">
                     <span className="label-text">Last Name</span>
@@ -80,6 +91,7 @@ const Login = () => {
                 </label>
               </>
             )}
+
             <label className="form-control w-full max-w-xs my-2">
               <div className="label">
                 <span className="label-text">Email ID:</span>
@@ -91,6 +103,7 @@ const Login = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </label>
+
             <label className="form-control w-full max-w-xs my-2">
               <div className="label">
                 <span className="label-text">Password</span>
@@ -103,7 +116,9 @@ const Login = () => {
               />
             </label>
           </div>
-          <p className="text-red-500">{error}</p>
+
+          <p className="text-red-500 text-center">{error}</p>
+
           <div className="card-actions justify-center m-2">
             <button
               className="btn btn-primary"
@@ -115,7 +130,10 @@ const Login = () => {
 
           <p
             className="m-auto cursor-pointer py-2"
-            onClick={() => setIsLoginForm((value) => !value)}
+            onClick={() => {
+              setIsLoginForm((value) => !value);
+              setError("");
+            }}
           >
             {isLoginForm
               ? "New User? Signup Here"
@@ -126,4 +144,5 @@ const Login = () => {
     </div>
   );
 };
+
 export default Login;
